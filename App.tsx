@@ -1,4 +1,3 @@
-// App.tsx
 import React from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
@@ -17,6 +16,15 @@ import AdminHomeScreen from './screens/AdminHomeScreen';
 import { RootStackParamList } from './types/types';
 import StudentHomeScreen from './screens/StudentHomeScreen';
 import TeacherHomeScreen from './screens/TeacherHomeScreen';
+import StudentAttendance from './screens/StudentAttendance';
+import StudentAcademics from './screens/StudentAcademics';
+import StudentCalendar from './screens/StudentCalendar';
+import StudentConduct from './screens/StudentConduct';
+import StudentChatroom from './screens/StudentChatroom';
+import StudentQuery from './screens/StudentQuery';
+import StudentSubmission from './screens/StudentSubmissions';
+import TeacherYourClass from './screens/TeacherYourClass';
+import TeacherOtherClass from './screens/TeacherOtherClass';
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
@@ -26,10 +34,10 @@ const App = () => {
       <Stack.Navigator
         screenOptions={{
           headerShown: true,
-          headerBackTitleVisible: true, // Show back button title
-          headerStyle: { backgroundColor: '#1c1c1c' }, // Header background color
-          headerTintColor: '#fff', // Back button color
-          headerTitle: '', // Remove header title
+          headerBackTitleVisible: true,
+          headerStyle: { backgroundColor: '#1c1c1c' },
+          headerTintColor: '#fff',
+          headerTitle: '',
         }}
       >
         <Stack.Screen name="Login" component={LoginScreen} />
@@ -44,8 +52,17 @@ const App = () => {
         <Stack.Screen name="LoginTeacherAccount" component={LoginTeacherAccountScreen} />
         <Stack.Screen name="CreateNewSchool" component={CreateNewSchool} />
         <Stack.Screen name="AdminHome" component={AdminHomeScreen} />
-        <Stack.Screen name="StudentHome" component={StudentHomeScreen}/>
-        <Stack.Screen name="TeacherHome" component={TeacherHomeScreen}/>
+        <Stack.Screen name="StudentHome" component={StudentHomeScreen} />
+        <Stack.Screen name="TeacherHome" component={TeacherHomeScreen} />
+        <Stack.Screen name="StudentAttendance" component={StudentAttendance} />
+        <Stack.Screen name="StudentAcademics" component={StudentAcademics} />
+        <Stack.Screen name="StudentCalendar" component={StudentCalendar} />
+        <Stack.Screen name="StudentConduct" component={StudentConduct} />
+        <Stack.Screen name="StudentChatroom" component={StudentChatroom} />
+        <Stack.Screen name="StudentQuery" component={StudentQuery} />
+        <Stack.Screen name="StudentSubmission" component={StudentSubmission} />
+        <Stack.Screen name="TeacherYourClass" component={TeacherYourClass} />
+        <Stack.Screen name="TeacherOtherClass" component={TeacherOtherClass} />
       </Stack.Navigator>
     </NavigationContainer>
   );
