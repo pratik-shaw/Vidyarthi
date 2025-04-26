@@ -33,7 +33,7 @@ const App = () => {
     <NavigationContainer>
       <Stack.Navigator
         screenOptions={{
-          headerShown: true,
+          headerShown: false,
           headerBackTitleVisible: true,
           headerStyle: { backgroundColor: '#1c1c1c' },
           headerTintColor: '#fff',

@@ -1,107 +1,324 @@
-import React, { useState } from 'react';
-import { View, TextInput, StyleSheet, Text, TouchableOpacity } from 'react-native';
-import { useNavigation } from '@react-navigation/native'; // Import the hook
+/* eslint-disable eol-last */
+/* eslint-disable comma-dangle */
+/* eslint-disable no-trailing-spaces */
+/* eslint-disable react-hooks/exhaustive-deps */
+import React, { useState, useEffect } from 'react';
+import { 
+  View, 
+  TextInput, 
+  StyleSheet, 
+  Text, 
+  TouchableOpacity, 
+  StatusBar, 
+  SafeAreaView,
+  Platform,
+  Animated,
+  KeyboardAvoidingView,
+  ScrollView
+} from 'react-native';
+import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
-import { RootStackParamList } from '../types/types'; // Import RootStackParamList for type safety
+import { RootStackParamList } from '../types/types';
+
+type CreateTeacherAccountScreenNavigationProp = NativeStackNavigationProp<
+  RootStackParamList,
+  'CreateTeacherAccount'
+>;
 
 const CreateTeacherAccountScreen = () => {
   const [name, setName] = useState('');
   const [schoolCode, setSchoolCode] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [department, setDepartment] = useState('');
+  const [employeeId, setEmployeeId] = useState('');
 
-  const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
+  const navigation = useNavigation<CreateTeacherAccountScreenNavigationProp>();
+  
+  const fadeAnim = new Animated.Value(0);
+  const slideAnim = new Animated.Value(30);
+
+  useEffect(() => {
+    Animated.parallel([
+      Animated.timing(fadeAnim, {
+        toValue: 1,
+        duration: 800,
+        useNativeDriver: true,
+      }),
+      Animated.timing(slideAnim, {
+        toValue: 0,
+        duration: 800,
+        useNativeDriver: true,
+      })
+    ]).start();
+  }, []);
 
   const handleCreateAccount = () => {
-    // You can add any validation or API call here
+    // Add any additional validation or functionality here if needed
     navigation.navigate('LoginTeacherAccount'); // Navigate to LoginTeacherAccountScreen
   };
 
+  const handleBackToLogin = () => {
+    navigation.goBack();
+  };
+
   return (
-    <View style={styles.container}>
-      <Text style={styles.welcomeText}>Create Teacher Account</Text>
-      <Text style={styles.label}>Name:</Text>
-      <TextInput
-        style={styles.input}
-        placeholder="Enter your name"
-        placeholderTextColor="#ccc"
-        value={name}
-        onChangeText={setName}
-      />
+    <SafeAreaView style={styles.safeArea}>
+      <StatusBar barStyle="dark-content" backgroundColor="#F8F9FC" />
+      <KeyboardAvoidingView 
+        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+        style={styles.keyboardAvoid}
+      >
+        <ScrollView contentContainerStyle={styles.scrollContainer}>
+          <View style={styles.container}>
+            <TouchableOpacity
+              style={styles.backButton}
+              onPress={handleBackToLogin}
+            >
+              <Text style={styles.backButtonText}>← Back</Text>
+            </TouchableOpacity>
+            
+            <Animated.View 
+              style={[
+                styles.headerContainer, 
+                { 
+                  opacity: fadeAnim, 
+                  transform: [{ translateY: slideAnim }]
+                }
+              ]}
+            >
+              <Text style={styles.appName}>Vidyarthi</Text>
+              <Text style={styles.title}>Create Teacher Account</Text>
+              <Text style={styles.subtitle}>Join your school's digital platform</Text>
+            </Animated.View>
+            
+            <Animated.View 
+              style={[
+                styles.formContainer,
+                {
+                  opacity: fadeAnim,
+                  transform: [{ translateY: slideAnim }]
+                }
+              ]}
+            >
+              <View style={styles.inputGroup}>
+                <Text style={styles.label}>Full Name</Text>
+                <TextInput
+                  style={styles.input}
+                  placeholder="Enter your full name"
+                  placeholderTextColor="#8A94A6"
+                  value={name}
+                  onChangeText={setName}
+                />
+              </View>
 
-      <Text style={styles.label}>School Code:</Text>
-      <TextInput
-        style={styles.input}
-        placeholder="Enter school code"
-        placeholderTextColor="#ccc"
-        value={schoolCode}
-        onChangeText={setSchoolCode}
-      />
+              <View style={styles.inputGroup}>
+                <Text style={styles.label}>School Code</Text>
+                <TextInput
+                  style={styles.input}
+                  placeholder="Enter school code"
+                  placeholderTextColor="#8A94A6"
+                  value={schoolCode}
+                  onChangeText={setSchoolCode}
+                />
+              </View>
 
-      <Text style={styles.label}>Email:</Text>
-      <TextInput
-        style={styles.input}
-        placeholder="Enter your email"
-        placeholderTextColor="#ccc"
-        value={email}
-        onChangeText={setEmail}
-        keyboardType="email-address"
-      />
+              <View style={styles.rowContainer}>
+                <View style={[styles.inputGroup, styles.rowInput]}>
+                  <Text style={styles.label}>Department</Text>
+                  <TextInput
+                    style={styles.input}
+                    placeholder="Enter department"
+                    placeholderTextColor="#8A94A6"
+                    value={department}
+                    onChangeText={setDepartment}
+                  />
+                </View>
 
-      <Text style={styles.label}>Create Password:</Text>
-      <TextInput
-        style={styles.input}
-        placeholder="Create a password"
-        placeholderTextColor="#ccc"
-        value={password}
-        onChangeText={setPassword}
-        secureTextEntry
-      />
+                <View style={[styles.inputGroup, styles.rowInput]}>
+                  <Text style={styles.label}>Employee ID</Text>
+                  <TextInput
+                    style={styles.input}
+                    placeholder="Enter ID"
+                    placeholderTextColor="#8A94A6"
+                    value={employeeId}
+                    onChangeText={setEmployeeId}
+                  />
+                </View>
+              </View>
 
-      <TouchableOpacity style={styles.button} onPress={handleCreateAccount}>
-        <Text style={styles.buttonText}>Create Account</Text>
-      </TouchableOpacity>
-    </View>
+              <View style={styles.inputGroup}>
+                <Text style={styles.label}>Email Address</Text>
+                <TextInput
+                  style={styles.input}
+                  placeholder="Enter your email"
+                  placeholderTextColor="#8A94A6"
+                  value={email}
+                  onChangeText={setEmail}
+                  keyboardType="email-address"
+                  autoCapitalize="none"
+                />
+              </View>
+
+              <View style={styles.inputGroup}>
+                <Text style={styles.label}>Create Password</Text>
+                <TextInput
+                  style={styles.input}
+                  placeholder="Create a secure password"
+                  placeholderTextColor="#8A94A6"
+                  value={password}
+                  onChangeText={setPassword}
+                  secureTextEntry
+                />
+              </View>
+
+              <TouchableOpacity 
+                style={styles.createButton} 
+                onPress={handleCreateAccount}
+                activeOpacity={0.9}
+              >
+                <Text style={styles.createButtonText}>Create Account</Text>
+              </TouchableOpacity>
+              
+              <View style={styles.loginContainer}>
+                <Text style={styles.loginText}>Already have an account? </Text>
+                <TouchableOpacity onPress={() => navigation.navigate('LoginTeacherAccount')}>
+                  <Text style={styles.loginLink}>Login</Text>
+                </TouchableOpacity>
+              </View>
+            </Animated.View>
+          </View>
+        </ScrollView>
+      </KeyboardAvoidingView>
+      
+      <View style={styles.footer}>
+        <Text style={styles.footerText}>Need help? Contact support@vidyarthi.edu</Text>
+        <Text style={styles.version}>Version 2.4.1</Text>
+      </View>
+    </SafeAreaView>
   );
 };
 
 const styles = StyleSheet.create({
-  welcomeText:{
-    fontSize: 28,
-    color: '#fff',
-    fontWeight: 'bold',
-    marginBottom: 40,
-    textAlign: 'center',
+  safeArea: {
+    flex: 1,
+    backgroundColor: '#F8F9FC',
+  },
+  keyboardAvoid: {
+    flex: 1,
+  },
+  scrollContainer: {
+    flexGrow: 1,
   },
   container: {
     flex: 1,
-    backgroundColor: '#1c1c1c',
-    padding: 20,
-    justifyContent: 'center',
+    backgroundColor: '#F8F9FC',
+    paddingHorizontal: 24,
+    paddingTop: 20,
+    paddingBottom: 20,
+  },
+  backButton: {
+    marginBottom: 20,
+    paddingVertical: 10,
+  },
+  backButtonText: {
+    fontSize: 16,
+    color: '#3A4276',
+    fontWeight: '500',
+  },
+  headerContainer: {
+    marginBottom: 24,
+  },
+  appName: {
+    fontSize: 22,
+    fontWeight: '700',
+    color: '#3A4276',
+    marginBottom: 16,
+  },
+  title: {
+    fontSize: 28,
+    fontWeight: '700',
+    color: '#3A4276',
+    marginBottom: 8,
+  },
+  subtitle: {
+    fontSize: 16,
+    color: '#8A94A6',
+  },
+  formContainer: {
+    backgroundColor: '#FFFFFF',
+    borderRadius: 16,
+    padding: 24,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 6 },
+    shadowOpacity: 0.05,
+    shadowRadius: 10,
+    elevation: 4,
+    marginBottom: 20,
+  },
+  rowContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+  },
+  rowInput: {
+    width: '48%',
+  },
+  inputGroup: {
+    marginBottom: 20,
   },
   label: {
-    color: '#fff',
-    fontSize: 16,
-    marginBottom: 10,
+    fontSize: 14,
+    fontWeight: '600',
+    color: '#3A4276',
+    marginBottom: 8,
   },
   input: {
     borderWidth: 1,
-    borderColor: '#fff',
-    backgroundColor: '#2e2e2e',
-    color: '#fff',
+    borderColor: '#E1E5EE',
+    backgroundColor: '#FFFFFF',
+    color: '#3A4276',
     borderRadius: 10,
-    padding: 10,
-    marginBottom: 20,
-  },
-  button: {
-    backgroundColor: '#000',
     padding: 15,
+    fontSize: 15,
+  },
+  createButton: {
+    backgroundColor: '#4E54C8',
+    padding: 16,
     borderRadius: 10,
     alignItems: 'center',
+    marginBottom: 20,
   },
-  buttonText: {
-    color: '#fff',
+  createButtonText: {
+    color: '#FFFFFF',
     fontSize: 16,
+    fontWeight: '600',
+  },
+  loginContainer: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+  },
+  loginText: {
+    color: '#8A94A6',
+    fontSize: 14,
+  },
+  loginLink: {
+    color: '#4E54C8',
+    fontSize: 14,
+    fontWeight: '500',
+  },
+  footer: {
+    marginBottom: Platform.OS === 'ios' ? 30 : 20,
+    alignItems: 'center',
+    paddingHorizontal: 24,
+  },
+  footerText: {
+    fontSize: 14,
+    color: '#8A94A6',
+    marginBottom: 5,
+  },
+  version: {
+    fontSize: 12,
+    color: '#B0B7C3',
   },
 });
 

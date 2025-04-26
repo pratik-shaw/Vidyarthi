@@ -1,12 +1,28 @@
-// screens/CreateNewSchoolScreen.tsx
-import React, { useState } from 'react';
-import { View, TextInput, Text, StyleSheet, ScrollView, TouchableOpacity } from 'react-native';
+/* eslint-disable eol-last */
+/* eslint-disable comma-dangle */
+/* eslint-disable no-trailing-spaces */
+/* eslint-disable react-hooks/exhaustive-deps */import React, { useState, useEffect } from 'react';
+import { 
+  View, 
+  TextInput, 
+  StyleSheet, 
+  Text, 
+  TouchableOpacity, 
+  StatusBar, 
+  SafeAreaView,
+  Platform,
+  Animated,
+  KeyboardAvoidingView,
+  ScrollView
+} from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { RootStackParamList } from '../types/types';
 
-// Define the navigation prop type
-type CreateNewSchoolScreenNavigationProp = NativeStackNavigationProp<RootStackParamList, 'CreateNewSchool'>;
+type CreateNewSchoolScreenNavigationProp = NativeStackNavigationProp<
+  RootStackParamList,
+  'CreateNewSchool'
+>;
 
 const CreateNewSchoolScreen = () => {
   // State for inputs
@@ -15,9 +31,27 @@ const CreateNewSchoolScreen = () => {
   const [address, setAddress] = useState('');
   const [schoolCode, setSchoolCode] = useState('');
   const [confirmSchoolCode, setConfirmSchoolCode] = useState('');
-  const [errorMessage, setErrorMessage] = useState(''); // State for error message
+  const [errorMessage, setErrorMessage] = useState('');
+  
+  const navigation = useNavigation<CreateNewSchoolScreenNavigationProp>();
+  
+  const fadeAnim = new Animated.Value(0);
+  const slideAnim = new Animated.Value(30);
 
-  const navigation = useNavigation<CreateNewSchoolScreenNavigationProp>(); // Initialize navigation
+  useEffect(() => {
+    Animated.parallel([
+      Animated.timing(fadeAnim, {
+        toValue: 1,
+        duration: 800,
+        useNativeDriver: true,
+      }),
+      Animated.timing(slideAnim, {
+        toValue: 0,
+        duration: 800,
+        useNativeDriver: true,
+      })
+    ]).start();
+  }, []);
 
   const handleSubmit = () => {
     // Perform validation before navigation
@@ -29,133 +63,290 @@ const CreateNewSchoolScreen = () => {
     }
   };
 
+  const handleBackToAdmin = () => {
+    navigation.goBack();
+  };
+
   return (
-    <ScrollView contentContainerStyle={styles.scrollContainer}>
-      <View style={styles.container}>
-        <Text style={styles.title}>Register New School</Text>
+    <SafeAreaView style={styles.safeArea}>
+      <StatusBar barStyle="dark-content" backgroundColor="#F8F9FC" />
+      <KeyboardAvoidingView 
+        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+        style={styles.keyboardAvoid}
+      >
+        <ScrollView contentContainerStyle={styles.scrollContainer}>
+          <View style={styles.container}>
+            <TouchableOpacity
+              style={styles.backButton}
+              onPress={handleBackToAdmin}
+            >
+              <Text style={styles.backButtonText}>← Back</Text>
+            </TouchableOpacity>
+            
+            <Animated.View 
+              style={[
+                styles.headerContainer, 
+                { 
+                  opacity: fadeAnim, 
+                  transform: [{ translateY: slideAnim }]
+                }
+              ]}
+            >
+              <Text style={styles.appName}>Vidyarthi</Text>
+              <Text style={styles.title}>Register New School</Text>
+              <Text style={styles.subtitle}>Create your institution's digital profile</Text>
+            </Animated.View>
+            
+            {errorMessage ? 
+              <Animated.View 
+                style={[
+                  styles.errorContainer,
+                  {
+                    opacity: fadeAnim
+                  }
+                ]}
+              >
+                <Text style={styles.errorText}>{errorMessage}</Text>
+              </Animated.View> 
+            : null}
+            
+            <Animated.View 
+              style={[
+                styles.formContainer,
+                {
+                  opacity: fadeAnim,
+                  transform: [{ translateY: slideAnim }]
+                }
+              ]}
+            >
+              <View style={styles.inputGroup}>
+                <Text style={styles.label}>School Name</Text>
+                <TextInput
+                  style={styles.input}
+                  placeholder="Enter full school name"
+                  placeholderTextColor="#8A94A6"
+                  value={schoolName}
+                  onChangeText={setSchoolName}
+                />
+              </View>
 
-        {/* Display error message */}
-        {errorMessage ? <Text style={styles.errorText}>{errorMessage}</Text> : null}
+              <View style={styles.inputGroup}>
+                <Text style={styles.label}>Contact Number</Text>
+                <TextInput
+                  style={styles.input}
+                  placeholder="Enter contact number"
+                  placeholderTextColor="#8A94A6"
+                  keyboardType="phone-pad"
+                  value={contactNo}
+                  onChangeText={setContactNo}
+                />
+              </View>
 
-        <Text style={styles.label}>Enter School Name:</Text>
-        <TextInput
-          style={styles.input}
-          placeholder="Enter school name"
-          placeholderTextColor="#ccc"
-          value={schoolName}
-          onChangeText={setSchoolName}
-        />
+              <View style={styles.inputGroup}>
+                <Text style={styles.label}>Address</Text>
+                <TextInput
+                  style={styles.input}
+                  placeholder="Enter complete address"
+                  placeholderTextColor="#8A94A6"
+                  value={address}
+                  onChangeText={setAddress}
+                  multiline
+                  numberOfLines={3}
+                  textAlignVertical="top"
+                />
+              </View>
+            </Animated.View>
+            
+            <Animated.View 
+              style={[
+                styles.codeContainer,
+                {
+                  opacity: fadeAnim,
+                  transform: [{ translateY: slideAnim }]
+                }
+              ]}
+            >
+              <Text style={styles.codeTitle}>Generate Unique School Code</Text>
+              <Text style={styles.codeSubtitle}>This code will be used by teachers and students to join</Text>
+              
+              <View style={styles.inputGroup}>
+                <Text style={styles.label}>Set School Code</Text>
+                <TextInput
+                  style={styles.input}
+                  placeholder="Create a unique code"
+                  placeholderTextColor="#8A94A6"
+                  value={schoolCode}
+                  onChangeText={setSchoolCode}
+                />
+              </View>
 
-        <Text style={styles.label}>Contact No.:</Text>
-        <TextInput
-          style={styles.input}
-          placeholder="Enter contact number"
-          placeholderTextColor="#ccc"
-          keyboardType="phone-pad"
-          value={contactNo}
-          onChangeText={setContactNo}
-        />
+              <View style={styles.inputGroup}>
+                <Text style={styles.label}>Confirm School Code</Text>
+                <TextInput
+                  style={styles.input}
+                  placeholder="Re-enter the code"
+                  placeholderTextColor="#8A94A6"
+                  value={confirmSchoolCode}
+                  onChangeText={setConfirmSchoolCode}
+                />
+              </View>
 
-        <Text style={styles.label}>Address:</Text>
-        <TextInput
-          style={styles.input}
-          placeholder="Enter address"
-          placeholderTextColor="#ccc"
-          value={address}
-          onChangeText={setAddress}
-        />
-
-        <View style={styles.card}>
-          <Text style={styles.cardTitle}>Generate Unique School Code</Text>
-
-          <Text style={styles.label}>Set School Code:</Text>
-          <TextInput
-            style={styles.input}
-            placeholder="Set school code"
-            placeholderTextColor="#ccc"
-            value={schoolCode}
-            onChangeText={setSchoolCode}
-          />
-
-          <Text style={styles.label}>Confirm School Code:</Text>
-          <TextInput
-            style={styles.input}
-            placeholder="Confirm school code"
-            placeholderTextColor="#ccc"
-            value={confirmSchoolCode}
-            onChangeText={setConfirmSchoolCode}
-          />
-        </View>
-
-        <TouchableOpacity style={styles.button} onPress={handleSubmit}>
-          <Text style={styles.buttonText}>Submit</Text>
-        </TouchableOpacity>
+              <TouchableOpacity 
+                style={styles.submitButton} 
+                onPress={handleSubmit}
+                activeOpacity={0.9}
+              >
+                <Text style={styles.submitButtonText}>Register School</Text>
+              </TouchableOpacity>
+            </Animated.View>
+          </View>
+        </ScrollView>
+      </KeyboardAvoidingView>
+      
+      <View style={styles.footer}>
+        <Text style={styles.footerText}>Need help? Contact support@vidyarthi.edu</Text>
+        <Text style={styles.version}>Version 2.4.1</Text>
       </View>
-    </ScrollView>
+    </SafeAreaView>
   );
 };
 
 const styles = StyleSheet.create({
+  safeArea: {
+    flex: 1,
+    backgroundColor: '#F8F9FC',
+  },
+  keyboardAvoid: {
+    flex: 1,
+  },
   scrollContainer: {
     flexGrow: 1,
-    justifyContent: 'center',
-    padding: 20,
-    backgroundColor: '#1c1c1c',
   },
   container: {
     flex: 1,
+    backgroundColor: '#F8F9FC',
+    paddingHorizontal: 24,
+    paddingTop: 20,
+    paddingBottom: 20,
+  },
+  backButton: {
+    marginBottom: 20,
+    paddingVertical: 10,
+  },
+  backButtonText: {
+    fontSize: 16,
+    color: '#3A4276',
+    fontWeight: '500',
+  },
+  headerContainer: {
+    marginBottom: 24,
+  },
+  appName: {
+    fontSize: 22,
+    fontWeight: '700',
+    color: '#3A4276',
+    marginBottom: 16,
   },
   title: {
     fontSize: 28,
-    fontWeight: 'bold',
-    color: '#fff',
+    fontWeight: '700',
+    color: '#3A4276',
+    marginBottom: 8,
+  },
+  subtitle: {
+    fontSize: 16,
+    color: '#8A94A6',
+    marginBottom: 8,
+  },
+  errorContainer: {
+    backgroundColor: '#FEEAEA',
+    borderRadius: 10,
+    padding: 15,
+    marginBottom: 20,
+    borderWidth: 1,
+    borderColor: '#FFCDD2',
+  },
+  errorText: {
+    color: '#D32F2F',
+    fontSize: 14,
     textAlign: 'center',
-    marginBottom: 30,
+  },
+  formContainer: {
+    backgroundColor: '#FFFFFF',
+    borderRadius: 16,
+    padding: 24,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 6 },
+    shadowOpacity: 0.05,
+    shadowRadius: 10,
+    elevation: 4,
+    marginBottom: 20,
+  },
+  codeContainer: {
+    backgroundColor: '#FFFFFF',
+    borderRadius: 16,
+    padding: 24,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 6 },
+    shadowOpacity: 0.05,
+    shadowRadius: 10,
+    elevation: 4,
+    marginBottom: 20,
+  },
+  codeTitle: {
+    fontSize: 18,
+    fontWeight: '700',
+    color: '#3A4276',
+    marginBottom: 8,
+  },
+  codeSubtitle: {
+    fontSize: 14,
+    color: '#8A94A6',
+    marginBottom: 16,
+  },
+  inputGroup: {
+    marginBottom: 20,
   },
   label: {
-    color: '#fff',
-    fontSize: 16,
-    marginBottom: 10,
+    fontSize: 14,
+    fontWeight: '600',
+    color: '#3A4276',
+    marginBottom: 8,
   },
   input: {
     borderWidth: 1,
-    borderColor: '#fff',
-    backgroundColor: '#2e2e2e',
-    color: '#fff',
+    borderColor: '#E1E5EE',
+    backgroundColor: '#FFFFFF',
+    color: '#3A4276',
     borderRadius: 10,
-    padding: 12,
-    marginBottom: 20,
-    fontSize: 16,
-  },
-  card: {
-    backgroundColor: '#333',
-    padding: 20,
-    borderRadius: 10,
-    marginTop: 20,
-  },
-  cardTitle: {
-    fontSize: 20,
-    color: '#fff',
-    fontWeight: 'bold',
-    marginBottom: 20,
-  },
-  button: {
-    backgroundColor: '#000',
     padding: 15,
+    fontSize: 15,
+  },
+  submitButton: {
+    backgroundColor: '#4E54C8',
+    padding: 16,
     borderRadius: 10,
     alignItems: 'center',
-    marginTop: 30,
+    marginTop: 10,
   },
-  buttonText: {
-    color: '#fff',
-    fontSize: 18,
-    fontWeight: 'bold',
-  },
-  errorText: {
-    color: 'red',
+  submitButtonText: {
+    color: '#FFFFFF',
     fontSize: 16,
-    marginBottom: 20,
-    textAlign: 'center',
+    fontWeight: '600',
+  },
+  footer: {
+    marginBottom: Platform.OS === 'ios' ? 30 : 20,
+    alignItems: 'center',
+    paddingHorizontal: 24,
+  },
+  footerText: {
+    fontSize: 14,
+    color: '#8A94A6',
+    marginBottom: 5,
+  },
+  version: {
+    fontSize: 12,
+    color: '#B0B7C3',
   },
 });
 
