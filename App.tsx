@@ -69,5 +69,3 @@ const App = () => {
 };
 
 export default App;
-
-//left making the admin home screen and the student home screen and the teacher home screen
